@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área 01</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Comfortaa:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="h-screen flex flex-col">
+  <!-- Região 1 (Cabeçalho) -->
+  <header class="relative bg-orange-500 h-24 flex items-center px-6 shadow-md">
+    <div class="absolute right-0 top-0 h-full w-1/4 bg-orange-500 shadow-[inset_5px_0_15px_rgba(0,0,0,0.1)] rounded-bl-3xl"></div>
+    <div class="relative z-10 flex items-center">
+      <div class="bg-gray-300 w-16 h-16 rounded-lg mr-4"></div>
+      <div>
+        <h1 id="tituloPrincipal" class="text-2xl text-white font-bold">Dashboard de Professores</h1>
+        <p id="subtitulo" class="text-sm text-gray-100 font-comfortaa">Ester Calazans: Administradora geral</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Corpo principal -->
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Menu lateral -->
+    <nav class="bg-gray-200 w-20 flex flex-col items-center py-6 space-y-4 rounded-r-3xl">
+      <button id="btnSec1" class="w-12 h-12 border-2 border-orange-500 rounded-xl hover:bg-orange-500 transition duration-300" title="Seção 1"></button>
+      <button id="btnSec2" class="w-12 h-12 border-2 border-orange-500 rounded-xl hover:bg-orange-500 transition duration-300" title="Seção 2"></button>
+      <button id="btnSec3" class="w-12 h-12 border-2 border-orange-500 rounded-xl hover:bg-orange-500 transition duration-300" title="Seção 3"></button>
+    </nav>
+
+    <!-- Área de conteúdo -->
+    <main id="conteudo" class="flex-1 bg-gray-200 m-6 rounded-3xl shadow-inner overflow-hidden relative transition-all duration-500 p-6">
+      <!-- Seção 1 -->
+      <section id="secao1" class="h-full flex flex-col">
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h2 class="text-xl font-semibold">Seção 1</h2>
+            <p class="text-gray-700 font-comfortaa">Conteúdo da primeira seção. Aqui poderão ser exibidas tabelas ou informações gerais.</p>
+          </div>
+          
+          <!-- Controles de colunas -->
+          <div class="bg-white rounded-lg p-4 shadow-sm">
+            <div class="flex items-center gap-4">
+              <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Exibir colunas:</label>
+              <div class="relative">
+                <button id="dropdownToggle" class="inline-flex justify-between w-48 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
+                  Selecionar colunas
+                  <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                  </svg>
+                </button>
+                
+                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+                  <div class="py-1 max-h-60 overflow-auto" role="menu">
+                    <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+                      <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="selectAllColumns" class="rounded border-gray-300 text-orange-600 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50">
+                        <span class="ml-2 font-medium">Todas as colunas</span>
+                      </label>
+                    </div>
+                    <div id="columnsList" class="py-1">
+                      <!-- Lista de colunas será preenchida via JavaScript -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Container da tabela com scroll -->
+        <div class="flex-1 overflow-auto bg-white rounded-lg shadow-md">
+          <table id="tabela-dados" class="min-w-full table-auto">
+            <thead class="bg-gray-50">
+              <tr>
+                <!-- Cabeçalho será preenchido via JavaScript -->
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <!-- Dados serão preenchidos via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Seção 2 -->
+      <section id="secao2" class="hidden h-full">
+        <h2 class="text-xl font-semibold mb-2">Seção 2</h2>
+        <p class="text-gray-700 font-comfortaa">Conteúdo da segunda seção.</p>
+      </section>
+
+      <!-- Seção 3 -->
+      <section id="secao3" class="hidden h-full">
+        <h2 class="text-xl font-semibold mb-2">Seção 3</h2>
+        <p class="text-gray-700 font-comfortaa">Conteúdo da terceira seção.</p>
+      </section>
+    </main>
+  </div>
+
+ <!-- Botões inferiores -->
+
+  <footer class="flex justify-end gap-4 p-4">
+      <button id="btn3" class="w-28 h-10 rounded-full bg-red-500 text-white font-bold transition-all duration-500">Botão 3</button>
+      <button id="btn2" class="w-28 h-10 rounded-full bg-blue-500 text-white font-bold transition-all duration-500">Botão 2</button>
+      <button id="btn1" class="w-28 h-10 rounded-full bg-green-500 text-white font-bold transition-all duration-500">Salvar</button>
+</footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

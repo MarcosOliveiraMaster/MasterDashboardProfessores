@@ -1,0 +1,88 @@
+body {
+    font-family: 'Lexend', sans-serif;
+    background-color: #f3f4f6;
+}
+.font-comfortaa { font-family: 'Comfortaa', cursive; }
+
+/* Estilos personalizados para a tabela e dropdown */
+#tabela-dados {
+    border-collapse: collapse;
+    width: 100%;
+}
+#tabela-dados th, #tabela-dados td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    /* Linhas verticais tracejadas */
+    border-right: 1px dashed #e5e7eb;
+    transition: all 0.2s ease;
+    position: relative;
+}
+#tabela-dados th:last-child, #tabela-dados td:last-child {
+    border-right: none;
+}
+#tabela-dados thead {
+    background-color: #f9fafb;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+#tabela-dados tbody tr:hover {
+    background-color: #f3f4f6;
+}
+#tabela-dados tbody tr:hover td {
+    height: auto;
+    min-height: 50px;
+    padding: 16px;
+}
+
+/* Para o dropdown */
+.hidden {
+    display: none;
+}
+
+/* Transições suaves */
+.fade-enter {
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+.fade-enter-active {
+    opacity: 1;
+}
+
+/* Resize handles para colunas */
+.resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 5px;
+    height: 100%;
+    background-color: transparent;
+    cursor: col-resize;
+    z-index: 10;
+}
+.resize-handle:hover {
+    background-color: #3b82f6;
+}
+
+/* Estilo para células em edição */
+.celula-editavel {
+    cursor: text;
+    transition: background-color 0.2s;
+}
+.celula-editavel:hover {
+    background-color: #fef3c7;
+}
+.celula-editando {
+    background-color: #fef3c7;
+    border: 1px solid #f59e0b;
+    border-radius: 4px;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+/* Botão de salvar com destaque quando há alterações */
+.btn-salvar-alterado {
+    background-color: #10b981 !important;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+    transform: scale(1.05);
+}
