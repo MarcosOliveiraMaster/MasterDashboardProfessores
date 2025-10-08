@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Área 01</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Comfortaa:wght@400;600&display=swap" rel="stylesheet">
@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="h-screen flex flex-col">
-  <!-- Região 1 (Cabeçalho) -->
   <header class="relative bg-orange-500 h-24 flex items-center px-6 shadow-md">
     <div class="absolute right-0 top-0 h-full w-1/4 bg-orange-500 shadow-[inset_5px_0_15px_rgba(0,0,0,0.1)] rounded-bl-3xl"></div>
     <div class="relative z-10 flex items-center">
@@ -22,18 +21,14 @@
     </div>
   </header>
 
-  <!-- Corpo principal -->
   <div class="flex flex-1 overflow-hidden">
-    <!-- Menu lateral -->
     <nav class="bg-gray-200 w-20 flex flex-col items-center py-6 space-y-4 rounded-r-3xl">
       <button id="btnSec1" class="w-12 h-12 border-2 border-orange-500 rounded-xl hover:bg-orange-500 transition duration-300" title="Seção 1"></button>
       <button id="btnSec2" class="w-12 h-12 border-2 border-orange-500 rounded-xl hover:bg-orange-500 transition duration-300" title="Seção 2"></button>
       <button id="btnSec3" class="w-12 h-12 border-2 border-orange-500 rounded-xl hover:bg-orange-500 transition duration-300" title="Seção 3"></button>
     </nav>
 
-    <!-- Área de conteúdo -->
     <main id="conteudo" class="flex-1 bg-gray-200 m-6 rounded-3xl shadow-inner overflow-hidden relative transition-all duration-500 p-6">
-      <!-- Seção 1 -->
       <section id="secao1" class="h-full flex flex-col">
         <div class="flex justify-between items-start mb-4">
           <div>
@@ -41,7 +36,6 @@
             <p class="text-gray-700 font-comfortaa">Conteúdo da primeira seção. Aqui poderão ser exibidas tabelas ou informações gerais.</p>
           </div>
           
-          <!-- Controles de colunas -->
           <div class="bg-white rounded-lg p-4 shadow-sm">
             <div class="flex items-center gap-4">
               <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Exibir colunas:</label>
@@ -57,13 +51,11 @@
                   <div class="py-1 max-h-60 overflow-auto" role="menu">
                     <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
                       <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="selectAllColumns" class="rounded border-gray-300 text-orange-600 shadow-sm focus:border-orange-300 focus:ring focus:ring-orange-200 focus:ring-opacity-50">
+                        <input type="checkbox" id="selectAllColumns" class="rounded border-gray-300 text-orange-600 shadow-sm">
                         <span class="ml-2 font-medium">Todas as colunas</span>
                       </label>
                     </div>
-                    <div id="columnsList" class="py-1">
-                      <!-- Lista de colunas será preenchida via JavaScript -->
-                    </div>
+                    <div id="columnsList" class="py-1"></div>
                   </div>
                 </div>
               </div>
@@ -71,42 +63,88 @@
           </div>
         </div>
 
-        <!-- Container da tabela com scroll -->
+        <!-- Painel de filtros -->
+        <div id="filtrosContainer" class="mb-4 bg-white rounded-lg shadow-sm p-4 relative">
+          <div class="flex items-start gap-4">
+            <div class="flex-1 min-w-[180px]">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Nome</label>
+              <input id="filtroNome" type="search" placeholder="Buscar por nome..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200">
+            </div>
+            <div class="flex-1 min-w-[160px]">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Bairros</label>
+              <input id="filtroBairro" type="search" placeholder="Buscar por bairro..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200">
+            </div>
+            <div class="w-40">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Turno</label>
+              <select id="filtroTurno" class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200">
+                <option value="">Todos</option>
+                <option value="Manha">Manhã</option>
+                <option value="Tarde">Tarde</option>
+              </select>
+            </div>
+            <div class="w-72 relative">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Disciplinas</label>
+              <button id="disciplinasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none">Selecionar disciplinas</button>
+              <div id="disciplinasMenu" class="hidden absolute left-0 mt-2 w-full max-h-48 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3">
+                <div class="grid grid-cols-2 gap-2 text-sm">
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Biologia"> Biologia</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Ciências"> Ciências</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Física"> Física</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Geografia"> Geografia</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="História"> História</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Inglês"> Inglês</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Literatura"> Literatura</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Matemática"> Matemática</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Pedagogia"> Pedagogia</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Português"> Português</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Química"> Química</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="w-64 relative">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Categorias</label>
+              <button id="categoriasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none">Selecionar categorias</button>
+              <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3">
+                <div class="grid grid-cols-1 gap-2 text-sm">
+                  <label><input type="checkbox" name="filtroCategorias" value="TDICS"> TDICS</label>
+                  <label><input type="checkbox" name="filtroCategorias" value="AulasParticulares"> Aulas particulares</label>
+                  <label><input type="checkbox" name="filtroCategorias" value="Neuro"> Neuro Divergentes</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="ml-auto flex items-end">
+              <button id="limparBusca" class="bg-blue-500 text-white rounded-lg px-4 py-2 font-medium hover:bg-blue-600">Limpar Busca</button>
+            </div>
+          </div>
+        </div>
+
         <div class="flex-1 overflow-auto bg-white rounded-lg shadow-md">
           <table id="tabela-dados" class="min-w-full table-auto">
             <thead class="bg-gray-50">
-              <tr>
-                <!-- Cabeçalho será preenchido via JavaScript -->
-              </tr>
+              <tr></tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-              <!-- Dados serão preenchidos via JavaScript -->
-            </tbody>
+            <tbody class="divide-y divide-gray-200"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- Seção 2 -->
       <section id="secao2" class="hidden h-full">
         <h2 class="text-xl font-semibold mb-2">Seção 2</h2>
-        <p class="text-gray-700 font-comfortaa">Conteúdo da segunda seção.</p>
       </section>
 
-      <!-- Seção 3 -->
       <section id="secao3" class="hidden h-full">
         <h2 class="text-xl font-semibold mb-2">Seção 3</h2>
-        <p class="text-gray-700 font-comfortaa">Conteúdo da terceira seção.</p>
       </section>
     </main>
   </div>
 
- <!-- Botões inferiores -->
-
   <footer class="flex justify-end gap-4 p-4">
-      <button id="btn3" class="w-28 h-10 rounded-full bg-red-500 text-white font-bold transition-all duration-500">Botão 3</button>
-      <button id="btn2" class="w-28 h-10 rounded-full bg-blue-500 text-white font-bold transition-all duration-500">Botão 2</button>
-      <button id="btn1" class="w-28 h-10 rounded-full bg-green-500 text-white font-bold transition-all duration-500">Salvar</button>
-</footer>
+    <button id="btn3" class="w-28 h-10 rounded-full bg-red-500 text-white font-bold transition-all duration-500">Botão 3</button>
+    <button id="btn2" class="w-28 h-10 rounded-full bg-blue-500 text-white font-bold transition-all duration-500">Botão 2</button>
+    <button id="btn1" class="w-28 h-10 rounded-full bg-green-500 text-white font-bold transition-all duration-500">Salvar</button>
+  </footer>
 
   <script src="script.js"></script>
 </body>
