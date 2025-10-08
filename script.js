@@ -50,41 +50,30 @@ async function ajustarLargurasNaturais() {
     const tabela = document.getElementById('tabela-dados');
     if (!tabela) return;
 
-    // Se o browser suportar, aguarda as fontes carregarem para medidas corretas
     try {
         if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    } catch (e) {
-        // ignore se não suportado
-    }
+    } catch (e) {}
 
-    // Garante que o layout calcule naturalmente para medição
     tabela.style.tableLayout = 'auto';
-
     const thead = tabela.querySelector('thead');
     const tbody = tabela.querySelector('tbody');
     const ths = Array.from(thead.querySelectorAll('th'));
     if (ths.length === 0) return;
 
-    // Tornar temporariamente sem quebras para medir largura real necessária
     ths.forEach(th => th.style.whiteSpace = 'nowrap');
-
-    // Para performance, limite o número de linhas que você vai medir.
-    // Ajuste maxRows se quiser cobrir toda a tabela.
     const rows = Array.from(tbody.querySelectorAll('tr'));
-    const maxRows = 100; // seguro para tabelas grandes
+    const maxRows = 100;
     const sampleRows = rows.slice(0, maxRows);
 
-    // Também torne as células da amostra sem quebra para medir corretamente
     sampleRows.forEach(r => {
         r.querySelectorAll('td').forEach(td => td.style.whiteSpace = 'nowrap');
     });
 
-    // Calcular largura necessária por coluna (header + amostra de células)
     const colCount = ths.length;
     const maxWidths = new Array(colCount).fill(0);
 
     ths.forEach((th, i) => {
-        const w = th.scrollWidth + 12; // folga visual
+        const w = th.scrollWidth + 12;
         maxWidths[i] = Math.max(maxWidths[i], w);
     });
 
@@ -96,26 +85,20 @@ async function ajustarLargurasNaturais() {
         });
     });
 
-    // Aplicar larguras calculadas (limites para evitar colunas absurdas)
     for (let i = 0; i < colCount; i++) {
         const th = ths[i];
-        const widthPx = Math.min(Math.max(Math.round(maxWidths[i]), 60), 1400); // entre 60 e 1400px
+        const widthPx = Math.min(Math.max(Math.round(maxWidths[i]), 60), 1400);
         th.style.width = widthPx + 'px';
-        // opcional: manter minWidth se quiser evitar colapsos
         th.style.minWidth = widthPx + 'px';
-        // aplicar nas células da coluna
         const cells = document.querySelectorAll(`#tabela-dados td:nth-child(${i + 1})`);
         cells.forEach(td => {
             td.style.width = widthPx + 'px';
             td.style.minWidth = widthPx + 'px';
-            // após aplicar largura inicial, permita wrap ao reduzir mais tarde
             td.style.whiteSpace = 'normal';
         });
-        // manter header sem wrap (melhora legibilidade dos títulos)
         th.style.whiteSpace = 'nowrap';
     }
 
-    // Após aplicar, estabiliza o layout para evitar relayouts (mas ainda permitimos alterações via JS)
     tabela.style.tableLayout = 'fixed';
 }
 
@@ -128,12 +111,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function inicializarApp() {
-    // Navegação seções
     document.getElementById('btnSec1')?.addEventListener('click', () => trocarSecao(1));
     document.getElementById('btnSec2')?.addEventListener('click', () => trocarSecao(2));
     document.getElementById('btnSec3')?.addEventListener('click', () => trocarSecao(3));
 
-    // Dropdowns e toggles
     document.getElementById('dropdownToggle')?.addEventListener('click', (e) => {
         e.stopPropagation();
         document.getElementById('dropdownMenu')?.classList.toggle('hidden');
@@ -147,18 +128,15 @@ function inicializarApp() {
         document.getElementById('categoriasMenu')?.classList.toggle('hidden');
     });
 
-    // fechar ao clicar fora
     document.addEventListener('click', () => {
         document.getElementById('dropdownMenu')?.classList.add('hidden');
         document.getElementById('disciplinasMenu')?.classList.add('hidden');
         document.getElementById('categoriasMenu')?.classList.add('hidden');
     });
 
-    // Botões
     document.getElementById('btn1')?.addEventListener('click', salvarAlteracoes);
     document.getElementById('limparBusca')?.addEventListener('click', limparFiltros);
 
-    // Filtros dinâmicos
     const inputNome = document.getElementById('filtroNome');
     const inputBairro = document.getElementById('filtroBairro');
     const selectTurno = document.getElementById('filtroTurno');
@@ -168,11 +146,9 @@ function inicializarApp() {
     inputBairro?.addEventListener('input', aplicarDebounced);
     selectTurno?.addEventListener('change', aplicarDebounced);
 
-    // listeners globais de redimensionamento (adicionados apenas uma vez)
     document.addEventListener('mousemove', redimensionarColuna);
     document.addEventListener('mouseup', pararRedimensionamento);
 
-    // Carregar dados
     carregarDadosSupabase();
 }
 
@@ -192,7 +168,7 @@ async function carregarDadosSupabase() {
             colunasDisponiveis = Object.keys(data[0]).filter(c => !colunasOcultas.includes(c));
             if (colunasSelecionadas.length === 0) colunasSelecionadas = [...colunasDisponiveis];
             criarDropdownColunas();
-            aplicarFiltros(); // renderiza tabela com filtros (vazio => tudo)
+            aplicarFiltros();
         } else {
             dadosTabela = [];
             document.querySelector('#tabela-dados tbody').innerHTML = '<tr><td colspan="100%" class="px-6 py-4 text-center text-gray-500">Nenhum dado encontrado</td></tr>';
@@ -233,7 +209,6 @@ function criarDropdownColunas() {
         columnsList.appendChild(div);
     });
 
-    // selectAll
     const selectAll = document.getElementById('selectAllColumns');
     if (selectAll) {
         selectAll.checked = colunasSelecionadas.length === colunasDisponiveis.length;
@@ -246,7 +221,6 @@ function criarDropdownColunas() {
         };
     }
 
-    // listeners individuais
     document.querySelectorAll('.coluna-checkbox').forEach(cb => {
         cb.onchange = () => {
             colunasSelecionadas = Array.from(document.querySelectorAll('.coluna-checkbox:checked')).map(i => i.value);
@@ -268,7 +242,6 @@ function criarTabela(dados) {
     const thead = tabela.querySelector('thead tr');
     const tbody = tabela.querySelector('tbody');
 
-    // Reset larguras inline antes de montar para garantir medição natural
     resetarLargurasColunas();
 
     thead.innerHTML = '';
@@ -292,13 +265,20 @@ function criarTabela(dados) {
     if (dados && dados.length > 0) {
         dados.forEach((item, idx) => {
             const tr = document.createElement('tr');
-            if (item.id !== undefined && item.id !== null) tr.dataset.rowId = item.id;
+            if (item.id !== undefined && item.id !== null && String(item.id).trim() !== '') tr.dataset.rowId = item.id;
             else tr.dataset.index = idx;
 
             colunasParaExibir.forEach(coluna => {
                 const td = document.createElement('td');
                 td.className = 'px-6 py-4 text-sm text-gray-900 celula-editavel';
-                td.textContent = (item[coluna] !== undefined && item[coluna] !== null) ? String(item[coluna]) : '';
+                let valor = (item[coluna] !== undefined && item[coluna] !== null) ? String(item[coluna]) : '';
+
+                // Formatar dataCadastro quando identificado (case-insensitive)
+                if (/^datacadastro$/i.test(coluna) || /^data.?cadastro$/i.test(coluna)) {
+                    valor = formatDateCustom(item[coluna]);
+                }
+
+                td.textContent = valor;
                 td.dataset.field = coluna;
                 td.addEventListener('click', (e) => {
                     if (e.target === td) iniciarEdicaoCelula(td);
@@ -308,8 +288,6 @@ function criarTabela(dados) {
             tbody.appendChild(tr);
         });
 
-        // Pequeno timeout para garantir que o browser tenha pintado e nos dê medidas corretas
-        // (valor pequeno e seguro)
         setTimeout(() => ajustarLargurasNaturais(), 20);
     } else {
         const tr = document.createElement('tr');
@@ -320,6 +298,50 @@ function criarTabela(dados) {
         tr.appendChild(td);
         tbody.appendChild(tr);
     }
+}
+
+// Formatação customizada dd/mm/yy - ddd (ddd em pt-BR abreviado)
+function formatDateCustom(raw) {
+    if (raw === undefined || raw === null || raw === '') return '';
+    // tenta detectar timestamp / ISO / já formatado
+    let d;
+    if (typeof raw === 'number' || (!isNaN(Number(raw)) && String(raw).length >= 10 && !String(raw).includes('-'))) {
+        // Possível timestamp em ms ou s
+        const n = Number(raw);
+        d = (String(n).length > 10) ? new Date(n) : new Date(n * 1000);
+    } else {
+        // tenta parse direto
+        const tryIso = new Date(String(raw));
+        if (!isNaN(tryIso.getTime())) d = tryIso;
+        else {
+            // tenta extrair dd/mm/yyyy já existente
+            // se estiver no formato dd/mm/yy, devolve diretamente padronizado
+            const match = String(raw).match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+            if (match) {
+                const dd = String(match[1]).padStart(2,'0');
+                const mm = String(match[2]).padStart(2,'0');
+                const yy = String(match[3]).slice(-2);
+                // weekday: tenta criar data para extrair dia
+                const candidate = new Date(`${yy.length===2?('20'+yy):match[3]}-${mm}-${dd}`);
+                if (!isNaN(candidate.getTime())) {
+                    d = candidate;
+                } else {
+                    return `${dd}/${mm}/${yy} - ???`;
+                }
+            } else {
+                return String(raw);
+            }
+        }
+    }
+
+    if (!d || isNaN(d.getTime())) return String(raw);
+
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    const yy = String(d.getFullYear()).slice(-2);
+    const weekday = d.toLocaleDateString('pt-BR', { weekday: 'short' }); // ex: 'ter.' ou 'ter'
+    const weekdayClean = weekday.replace('.', '').toLowerCase();
+    return `${dd}/${mm}/${yy} - ${weekdayClean}`;
 }
 
 // Redimensionamento
@@ -402,7 +424,6 @@ function finalizarEdicao(celula, input, valorOriginal) {
         if (!dadosAlterados.has(idRegistro)) dadosAlterados.set(idRegistro, { id: idRegistro });
         dadosAlterados.get(idRegistro)[campo] = novoValor;
 
-        // Atualiza dadosTabela local para refletir filtro/UI
         if (dadosTabela) {
             const idx = dadosTabela.findIndex(d => String(d.id) === String(idRegistro));
             if (idx > -1) dadosTabela[idx][campo] = novoValor;
@@ -414,7 +435,7 @@ function finalizarEdicao(celula, input, valorOriginal) {
     }
 }
 
-// Salvar alterações (um update por linha, em paralelo)
+// Salvar alterações (um update por linha validado)
 async function salvarAlteracoes() {
     if (dadosAlterados.size === 0) {
         alert('Nenhuma alteração para salvar.');
@@ -426,9 +447,24 @@ async function salvarAlteracoes() {
         btnSalvar.textContent = 'Salvando...';
         btnSalvar.disabled = true;
 
-        const alteracoes = Array.from(dadosAlterados.values());
+        const alteracoes = Array.from(dadosAlterados.values())
+            // filtrar apenas registros com id válido (não tentar atualizar linhas temporárias sem id)
+            .filter(al => al && al.id !== undefined && al.id !== null && String(al.id).trim() !== '');
+
+        if (alteracoes.length === 0) {
+            alert('Somente registros sem ID foram alterados; nada para enviar ao banco.');
+            btnSalvar.textContent = textoOrig;
+            btnSalvar.disabled = false;
+            return;
+        }
+
+        // sanitizar campos: remover id antes do update
         const promessas = alteracoes.map(al => {
             const { id, ...campos } = al;
+            // remove propriedades vazias/undefined
+            Object.keys(campos).forEach(k => {
+                if (campos[k] === undefined) delete campos[k];
+            });
             const idNum = isNaN(Number(id)) ? id : Number(id);
             return supabase.from('candidatoSelecao').update(campos).eq('id', idNum);
         });
@@ -442,7 +478,6 @@ async function salvarAlteracoes() {
         btnSalvar.textContent = textoOrig;
         btnSalvar.disabled = false;
         alert('Alterações salvas com sucesso!');
-        // Recarrega para garantir consistência
         carregarDadosSupabase();
     } catch (err) {
         console.error('Erro salvar:', err);
@@ -498,7 +533,9 @@ function aplicarFiltros() {
             if (Array.isArray(raw)) lista = raw.map(x => String(x).toLowerCase());
             else if (typeof raw === 'string') lista = raw.split(/[,;|]/).map(s => s.trim().toLowerCase()).filter(Boolean);
             else lista = [String(raw).toLowerCase()];
-            return disciplinasSelecionadas.some(d => lista.includes(d));
+
+            // agora: exigir que todas as disciplinas selecionadas estejam presentes na lista (pelo menos essas)
+            return disciplinasSelecionadas.every(d => lista.includes(d));
         });
     }
 
@@ -506,15 +543,15 @@ function aplicarFiltros() {
         resultado = resultado.filter(item => {
             return categoriasSelecionadas.some(cat => {
                 if (cat === 'TDICS') {
-                    const v = item.expTDCS ?? item.expTdcs ?? item.expTDCS;
+                    const v = findPossibleField(item, ['ExpTDICS','expTDICS','expTdics','expTDCS','ExpTdics','expTDCS']);
                     return checkTruthy(v);
                 }
                 if (cat === 'Neuro') {
-                    const v = item.expNEURO ?? item.expNeuro ?? item.expNEURO;
+                    const v = findPossibleField(item, ['ExpNeuro','expNEURO','expNeuro','expneuro','ExpNeUro','ExpNEURO']);
                     return checkTruthy(v);
                 }
                 if (cat === 'AulasParticulares') {
-                    const v = item.ExpAulas ?? item.expAulas ?? item.expaulas;
+                    const v = findPossibleField(item, ['ExpAulas','expAulas','expaulas','ExpAula','expAula']);
                     return checkTruthy(v);
                 }
                 return false;
@@ -523,6 +560,20 @@ function aplicarFiltros() {
     }
 
     criarTabela(resultado);
+}
+
+// procura o primeiro campo definido em 'possibilities'
+function findPossibleField(item, possibilities) {
+    for (const p of possibilities) {
+        if (Object.prototype.hasOwnProperty.call(item, p) && item[p] !== undefined && item[p] !== null) return item[p];
+    }
+    // tenta checar campos similares por lower-case
+    const lowerMap = {};
+    Object.keys(item || {}).forEach(k => lowerMap[k.toLowerCase()] = item[k]);
+    for (const p of possibilities) {
+        if (lowerMap[p.toLowerCase()] !== undefined) return lowerMap[p.toLowerCase()];
+    }
+    return undefined;
 }
 
 function checkTruthy(v) {

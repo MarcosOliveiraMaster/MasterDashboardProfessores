@@ -74,6 +74,12 @@ body {
 body.resizing { cursor: col-resize; }
 .resize-handle.active { background-color: rgba(245,158,11,0.15); }
 
+/* --- Ajustes solicitados: reduzir fontes em placeholders e listas (2 pontos aprox.) --- */
+.filtro-input { font-size: 0.85rem; } /* inputs/selects/buttons de busca */
+.filtro-input::placeholder { font-size: 0.85rem; opacity: 0.8; }
+.filtro-listings { font-size: 0.85rem; } /* listas dentro dos menus (disciplinas, categorias, columnsList) */
+
+/* Pequenas melhorias de responsividade */
 @media (max-width: 1024px) {
     #filtrosContainer .flex { flex-wrap: wrap; gap: 8px; }
 }

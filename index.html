@@ -68,15 +68,15 @@
           <div class="flex items-start gap-4">
             <div class="flex-1 min-w-[180px]">
               <label class="block text-xs font-medium text-gray-600 mb-1">Nome</label>
-              <input id="filtroNome" type="search" placeholder="Buscar por nome..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200">
+              <input id="filtroNome" type="search" placeholder="Buscar por nome..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
             </div>
             <div class="flex-1 min-w-[160px]">
               <label class="block text-xs font-medium text-gray-600 mb-1">Bairros</label>
-              <input id="filtroBairro" type="search" placeholder="Buscar por bairro..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200">
+              <input id="filtroBairro" type="search" placeholder="Buscar por bairro..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
             </div>
             <div class="w-40">
               <label class="block text-xs font-medium text-gray-600 mb-1">Turno</label>
-              <select id="filtroTurno" class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200">
+              <select id="filtroTurno" class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
                 <option value="">Todos</option>
                 <option value="Manha">Manhã</option>
                 <option value="Tarde">Tarde</option>
@@ -84,8 +84,8 @@
             </div>
             <div class="w-72 relative">
               <label class="block text-xs font-medium text-gray-600 mb-1">Disciplinas</label>
-              <button id="disciplinasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none">Selecionar disciplinas</button>
-              <div id="disciplinasMenu" class="hidden absolute left-0 mt-2 w-full max-h-48 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3">
+              <button id="disciplinasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar disciplinas</button>
+              <div id="disciplinasMenu" class="hidden absolute left-0 mt-2 w-full max-h-48 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
                 <div class="grid grid-cols-2 gap-2 text-sm">
                   <label><input type="checkbox" name="filtroDisciplinas" value="Biologia"> Biologia</label>
                   <label><input type="checkbox" name="filtroDisciplinas" value="Ciências"> Ciências</label>
@@ -104,8 +104,8 @@
 
             <div class="w-64 relative">
               <label class="block text-xs font-medium text-gray-600 mb-1">Categorias</label>
-              <button id="categoriasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none">Selecionar categorias</button>
-              <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3">
+              <button id="categoriasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar categorias</button>
+              <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
                 <div class="grid grid-cols-1 gap-2 text-sm">
                   <label><input type="checkbox" name="filtroCategorias" value="TDICS"> TDICS</label>
                   <label><input type="checkbox" name="filtroCategorias" value="AulasParticulares"> Aulas particulares</label>
@@ -114,7 +114,7 @@
               </div>
             </div>
 
-            <div class="ml-auto flex items-end">
+            <div class="ml-auto flex items-center mt-1">
               <button id="limparBusca" class="bg-blue-500 text-white rounded-lg px-4 py-2 font-medium hover:bg-blue-600">Limpar Busca</button>
             </div>
           </div>
