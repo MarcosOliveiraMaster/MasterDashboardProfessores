@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Área 01</title>
+  <title>Dashboard Professores</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Comfortaa:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="h-screen flex flex-col">
-  <header class="relative bg-orange-500 h-24 flex items-center px-6 shadow-md">
+  <header class="relative bg-orange-500 h-16 flex items-center px-6 shadow-md">
     <div class="absolute right-0 top-0 h-full w-1/4 bg-orange-500 shadow-[inset_5px_0_15px_rgba(0,0,0,0.1)] rounded-bl-3xl"></div>
     <div class="relative z-10 flex items-center">
-      <div class="bg-gray-300 w-16 h-16 rounded-lg mr-4"></div>
+      <div class="bg-gray-300 w-12 h-12 rounded-lg mr-4"></div>
       <div>
-        <h1 id="tituloPrincipal" class="text-2xl text-white font-bold">Dashboard de Professores</h1>
-        <p id="subtitulo" class="text-sm text-gray-100 font-comfortaa">Ester Calazans: Administradora geral</p>
+        <h1 id="tituloPrincipal" class="text-xl text-white font-bold">Dashboard de Professores</h1>
+        <p id="subtitulo" class="text-xs text-orange-100 font-comfortaa">Ester Calazans: Administradora geral</p>
       </div>
     </div>
   </header>
@@ -32,10 +32,10 @@
       <section id="secao1" class="h-full flex flex-col">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h2 class="text-xl font-semibold">Seção 1</h2>
-            <p class="text-gray-700 font-comfortaa">Conteúdo da primeira seção. Aqui poderão ser exibidas tabelas ou informações gerais.</p>
+            <h2 class="text-xl font-semibold">Banco de dados</h2>
+            <p class="text-gray-700 font-comfortaa">Visualização e Busca de Colaboradores</p>
           </div>
-          
+
           <div class="bg-white rounded-lg p-4 shadow-sm">
             <div class="flex items-center gap-4">
               <label class="text-sm font-medium text-gray-700 whitespace-nowrap">Exibir colunas:</label>
@@ -46,8 +46,8 @@
                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                   </svg>
                 </button>
-                
-                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20">
+
+                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-40">
                   <div class="py-1 max-h-60 overflow-auto" role="menu">
                     <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
                       <label class="inline-flex items-center cursor-pointer">
@@ -74,14 +74,19 @@
               <label class="block text-xs font-medium text-gray-600 mb-1">Bairros</label>
               <input id="filtroBairro" type="search" placeholder="Buscar por bairro..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
             </div>
-            <div class="w-40">
-              <label class="block text-xs font-medium text-gray-600 mb-1">Turno</label>
-              <select id="filtroTurno" class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
-                <option value="">Todos</option>
-                <option value="Manha">Manhã</option>
-                <option value="Tarde">Tarde</option>
-              </select>
+
+            <!-- Dias e Turnos dropdown -->
+            <div class="w-64 relative">
+              <label class="block text-xs font-medium text-gray-600 mb-1">Dias e Turnos</label>
+              <button id="diasTurnosToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">
+                Selecionar dias e turnos
+              </button>
+              <div id="diasTurnosMenu" class="hidden absolute left-0 mt-2 w-full max-h-60 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
+                <div id="diasTurnosContainer" class="flex flex-col gap-1 text-sm"></div>
+              </div>
             </div>
+
+            <!-- Disciplinas -->
             <div class="w-72 relative">
               <label class="block text-xs font-medium text-gray-600 mb-1">Disciplinas</label>
               <button id="disciplinasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar disciplinas</button>
@@ -102,14 +107,15 @@
               </div>
             </div>
 
+            <!-- Categorias -->
             <div class="w-64 relative">
               <label class="block text-xs font-medium text-gray-600 mb-1">Categorias</label>
               <button id="categoriasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar categorias</button>
               <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
                 <div class="grid grid-cols-1 gap-2 text-sm">
-                  <label><input type="checkbox" name="filtroCategorias" value="TDICS"> TDICS</label>
-                  <label><input type="checkbox" name="filtroCategorias" value="AulasParticulares"> Aulas particulares</label>
-                  <label><input type="checkbox" name="filtroCategorias" value="Neuro"> Neuro Divergentes</label>
+                  <label><input type="checkbox" name="filtroCategorias" value="expTdics"> TDICS</label>
+                  <label><input type="checkbox" name="filtroCategorias" value="expAulas"> Aulas particulares</label>
+                  <label><input type="checkbox" name="filtroCategorias" value="expNeuro"> Neuro Divergentes</label>
                 </div>
               </div>
             </div>
@@ -120,13 +126,16 @@
           </div>
         </div>
 
-        <div class="flex-1 overflow-auto bg-white rounded-lg shadow-md">
-          <table id="tabela-dados" class="min-w-full table-auto">
-            <thead class="bg-gray-50">
-              <tr></tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200"></tbody>
-          </table>
+        <div class="flex-1 bg-white rounded-lg shadow-md overflow-hidden">
+          <!-- wrapper que permite scroll horizontal e vertical -->
+          <div class="table-wrapper overflow-auto h-full p-4">
+            <table id="tabela-dados" class="min-w-full" role="table" aria-label="Tabela de Professores">
+              <thead class="bg-gray-50 sticky top-0 z-20">
+                <tr></tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
         </div>
       </section>
 
@@ -141,9 +150,8 @@
   </div>
 
   <footer class="flex justify-end gap-4 p-4">
-    <button id="btn3" class="w-28 h-10 rounded-full bg-red-500 text-white font-bold transition-all duration-500">Botão 3</button>
-    <button id="btn2" class="w-28 h-10 rounded-full bg-blue-500 text-white font-bold transition-all duration-500">Botão 2</button>
     <button id="btn1" class="w-28 h-10 rounded-full bg-green-500 text-white font-bold transition-all duration-500">Salvar</button>
+    <div id="statusMsg" class="text-center text-sm text-gray-600 mt-4"></div>
   </footer>
 
   <script src="script.js"></script>
