@@ -14,6 +14,106 @@ body {
     border-radius: 8px;
 }
 
+/* ===== HAMBURGER ===== */
+.hamburger {
+  display: none;
+    background: transparent;
+      border: 0;
+        padding: 10px;
+          margin: 8px;
+            width: 48px;
+              height: 48px;
+                border-radius: 10px;
+                  align-items: center;
+                    justify-content: center;
+                      cursor: pointer;
+                      }
+                      .hamburger-box { display:inline-block; width:24px; height:16px; position:relative; }
+                      .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+                        display:block; background:#111; height:2px; border-radius:2px; position:absolute; left:0; right:0;
+                          transition: transform .25s ease, opacity .25s ease;
+                          }
+                          .hamburger-inner { top:50%; transform: translateY(-50%); }
+                          .hamburger-inner::before { content:''; top:-7px; }
+                          .hamburger-inner::after  { content:''; top:7px; }
+                          .hamburger.active .hamburger-inner { transform: rotate(45deg); }
+                          .hamburger.active .hamburger-inner::before { transform: rotate(-90deg) translateX(-6px); top:0; }
+                          .hamburger.active .hamburger-inner::after  { opacity: 0; transform: translateX(-10px); }
+
+                          /* ===== NAV MOBILE ===== */
+                          .mobile-nav {
+                            position: absolute;
+                              top: 72px;            /* ajuste conforme header */
+                                left: 12px;
+                                  right: 12px;
+                                    background: white;
+                                      border-radius: 12px;
+                                        box-shadow: 0 12px 40px rgba(16,24,40,0.08);
+                                          z-index: 2000;
+                                            padding: 12px;
+                                            }
+                                            .mobile-nav ul { list-style: none; display:flex; flex-direction:column; gap:8px; margin:0; padding:0; }
+                                            .mobile-nav button { width:100%; padding:12px; text-align:left; border-radius:8px; border:1px solid #eef2f7; background:#fff; }
+
+                                            /* hidden helper */
+                                            .hidden { display:none !important; }
+
+                                            /* ===== TABELA: WRAPPER DE ROLAGEM (melhora rolagem mobile) ===== */
+                                            .table-wrapper {
+                                              width: 100%;
+                                                overflow-x: auto;
+                                                  overflow-y: auto;
+                                                    -webkit-overflow-scrolling: touch;
+                                                      max-height: calc(100vh - 240px); /* deixa espaço para header/filtros */
+                                                        padding: 8px;
+                                                        }
+
+                                                        /* Força tabela com largura mínima conforme conteúdo e permite scroll horizontal */
+                                                        #tabela-dados {
+                                                          min-width: 900px; /* valor conservador — ajustável conforme colunas */
+                                                            width: 100%;
+                                                            }
+
+                                                            /* ===== FILTROS: GRID MOBILE ===== */
+                                                            .filtros-grid {
+                                                              display: grid;
+                                                                gap: 8px;
+                                                                  grid-template-columns: 1fr 1fr; /* duas colunas em mobile */
+                                                                    align-items: center;
+                                                                      padding: 10px;
+                                                                        border-radius: 8px;
+                                                                          background: #fff;
+                                                                          }
+                                                                          .filtros-grid .filtro-item { min-width: 0; } /* evita overflow */
+                                                                          .filtros-grid .filtro-actions { display:flex; gap:8px; justify-content:flex-end; grid-column: 1 / -1; }
+
+                                                                          /* botões compactos */
+                                                                          .btn.small { padding:8px 10px; font-size:0.9rem; border-radius:8px; }
+
+                                                                          /* botão de visualizar listas destacado */
+                                                                          #btnViewLists { background: linear-gradient(90deg,#ef4502,#ff7b33); color:white; border: none; }
+
+                                                                          /* ===== Estilos responsivos por breakpoint ===== */
+                                                                          @media (max-width: 900px) {
+                                                                            /* mostre hamburger, oculte progress bar (pode esconder ou compactar) */
+                                                                              .hamburger { display:flex; }
+                                                                                .progress-bar { display:none; }
+
+                                                                                  /* filtros passam a ocupar 100% em telas muito estreitas */
+                                                                                    .filtros-grid { grid-template-columns: 1fr; }
+                                                                                      .filtros-grid .filtro-actions { justify-content: space-between; }
+
+                                                                                        /* tabela: reduzir min-width para permitir melhor scroll */
+                                                                                          #tabela-dados { min-width: 700px; }
+                                                                                          }
+
+                                                                                          @media (max-width: 480px) {
+                                                                                            .container { padding: 12px; border-radius: 12px; }
+                                                                                              .mobile-nav { top: 64px; left: 8px; right: 8px; padding: 8px; }
+                                                                                                #tabela-dados { min-width: 600px; }
+                                                                                                  .btn.small { padding: 10px; width: 48%; font-size: 0.95rem; }
+                                                                                                  }
+
 /* Tabela: layout AUTO (começa com largura ideal ao conteúdo).
    A tabela pode crescer além da largura do container -> scroll horizontal no wrapper */
 #tabela-dados {
