@@ -56,6 +56,11 @@ function inicializarApp() {
   document.getElementById('btnSec2')?.addEventListener('click', () => trocarSecao(2));
   document.getElementById('btnSec3')?.addEventListener('click', () => trocarSecao(3));
 
+    // listener nas checkboxes de disciplinas (disparar filtro ao marcar/desmarcar)
+  document.querySelectorAll('input[name="filtroDisciplinas"]').forEach(cb => {
+    cb.addEventListener('change', () => aplicarFiltros());
+  });
+
   // listener nas checkboxes de categorias (caso estejam estáticas no HTML)
   document.querySelectorAll('input[name="filtroCategorias"]').forEach(cb => {
     cb.addEventListener('change', () => aplicarFiltros());
@@ -490,24 +495,32 @@ function aplicarFiltros() {
   }
 
   // disciplinas (AND)
-  const disciplinasSelecionadas = Array.from(document.querySelectorAll('input[name="filtroDisciplinas"]:checked')).map(i => normalizeStr(i.value));
+  // disciplinas — manter linhas que tenham TODAS as disciplinas selecionadas
+  const disciplinasSelecionadas = Array.from(document.querySelectorAll('input[name="filtroDisciplinas"]:checked'))
+    .map(i => normalizeStr(i.value));
+
   if (disciplinasSelecionadas.length > 0) {
     resultado = resultado.filter(item => {
-      const raw = getFieldValue(item, 'disciplinas') || getFieldValue(item, 'Disciplinas') || getFieldValue(item, 'disciplina') || getFieldValue(item, 'disciplinas_list') || '';
+      const raw = getFieldValue(item, 'disciplinas') || getFieldValue(item, 'Disciplinas') || getFieldValue(item, 'disciplina') || '';
       let lista = [];
-      if (Array.isArray(raw)) lista = raw.map(x => normalizeStr(String(x)));
-      else if (typeof raw === 'string') lista = raw.split(/[,;|]/).map(s => normalizeStr(s)).filter(Boolean);
-      else lista = [normalizeStr(String(raw))];
+
+      if (Array.isArray(raw)) {
+        lista = raw.map(x => normalizeStr(String(x))).filter(Boolean);
+      } else {
+        lista = String(raw).split(/[,;|\/]/).map(s => normalizeStr(s)).filter(Boolean);
+      }
+
+      // Linha passa apenas se contiver TODAS as disciplinas marcadas
       return disciplinasSelecionadas.every(d => lista.includes(d));
     });
   }
 
   // CATEGORIAS: procurar "sim" explicitamente nas colunas selecionadas
   const categoriasSelecionadas = Array.from(document.querySelectorAll('input[name="filtroCategorias"]:checked')).map(i => i.value);
+
   if (categoriasSelecionadas.length > 0) {
     resultado = resultado.filter(item => {
-      return categoriasSelecionadas.some(coluna => {
-        // coluna é esperada como 'expTdics' ou 'expAulas' ou 'expNeuro'
+      return categoriasSelecionadas.every(coluna => {
         const v = getFieldValue(item, coluna);
         return valueIsSim(v);
       });
