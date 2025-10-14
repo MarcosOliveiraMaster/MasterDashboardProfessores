@@ -277,16 +277,70 @@ function criarTabela(dados) {
         td.className = 'px-6 py-4 text-sm text-gray-900 celula-editavel';
         td.dataset.field = coluna;
 
-        if (isDateColumnName(coluna)) {
-          const raw = getFieldValue(item, coluna);
-          td.textContent = formatDateForDisplay(raw);
+        const valor = getFieldValue(item, coluna);
+        const valorFormatado = (valor !== undefined && valor !== null) ? String(valor) : '';
+
+        // Função Nova 01: Contato com tooltip para WhatsApp
+        if (isContatoColumn(coluna)) {
+          const container = document.createElement('div');
+          container.className = 'relative inline-block';
+          
+          const span = document.createElement('span');
+          span.textContent = valorFormatado;
+          span.className = 'contato-whatsapp cursor-help';
+          
+          // Tooltip flutuante
+          const tooltip = document.createElement('div');
+          tooltip.className = 'whatsapp-tooltip hidden absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-50';
+          tooltip.textContent = 'Ir para WhatsApp';
+          
+          container.appendChild(span);
+          container.appendChild(tooltip);
+          
+          // Eventos para mostrar/ocultar tooltip
+          container.addEventListener('mouseenter', () => {
+            tooltip.classList.remove('hidden');
+          });
+          
+          container.addEventListener('mouseleave', () => {
+            tooltip.classList.add('hidden');
+          });
+          
+          // Click para abrir WhatsApp
+          container.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const numeroLimpo = limparNumeroTelefone(valorFormatado);
+            if (numeroLimpo) {
+              window.open(`https://wa.me/${numeroLimpo}`, '_blank');
+            }
+          });
+          
+          td.textContent = '';
+          td.appendChild(container);
+        }
+        // Função Nova 02: Email clicável para copiar
+        else if (isEmailColumn(coluna)) {
+          const span = document.createElement('span');
+          span.textContent = valorFormatado;
+          span.className = 'cursor-pointer email-copiar';
+          span.addEventListener('click', (e) => {
+            e.stopPropagation();
+            copiarEmail(valorFormatado);
+          });
+          td.textContent = '';
+          td.appendChild(span);
+        }
+        else if (isDateColumnName(coluna)) {
+          td.textContent = formatDateForDisplay(valor);
         } else {
-          const v = getFieldValue(item, coluna);
-          td.textContent = (v !== undefined && v !== null) ? String(v) : '';
+          td.textContent = valorFormatado;
         }
 
         td.addEventListener('click', (e) => {
-          if (e.target === td) iniciarEdicaoCelula(td);
+          if (e.target === td && !isContatoColumn(coluna) && !isEmailColumn(coluna)) {
+            iniciarEdicaoCelula(td);
+          }
         });
 
         tr.appendChild(td);
@@ -318,6 +372,51 @@ function criarTabela(dados) {
     tr.appendChild(td);
     tbody.appendChild(tr);
   }
+}
+
+// ---------------- NOVAS FUNÇÕES ----------------
+// Função Nova 01: Identificar coluna de contato
+function isContatoColumn(coluna) {
+  const col = coluna.toLowerCase();
+  return col.includes('telefone') || col.includes('celular') || col.includes('contato') || col.includes('whatsapp');
+}
+
+// Função Nova 01: Limpar número de telefone
+function limparNumeroTelefone(numero) {
+  return numero.replace(/\D/g, '');
+}
+
+// Função Nova 02: Identificar coluna de email
+function isEmailColumn(coluna) {
+  const col = coluna.toLowerCase();
+  return col.includes('email') || col.includes('e-mail');
+}
+
+// Função Nova 02: Copiar email
+function copiarEmail(email) {
+  navigator.clipboard.writeText(email).then(() => {
+    mostrarPopup('E-mail copiado!');
+  }).catch(err => {
+    console.error('Erro ao copiar e-mail: ', err);
+    mostrarPopup('Erro ao copiar e-mail');
+  });
+}
+
+// Função Nova 02: Mostrar popup de confirmação
+function mostrarPopup(mensagem) {
+  const popup = document.createElement('div');
+  popup.textContent = mensagem;
+  popup.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black bg-opacity-70 text-white px-6 py-3 rounded-lg z-50 transition-opacity duration-300';
+  document.body.appendChild(popup);
+  
+  setTimeout(() => {
+    popup.style.opacity = '0';
+    setTimeout(() => {
+      if (popup.parentNode) {
+        popup.parentNode.removeChild(popup);
+      }
+    }, 300);
+  }, 1500);
 }
 
 // ---------------- REDIMENSIONAMENTO ----------------

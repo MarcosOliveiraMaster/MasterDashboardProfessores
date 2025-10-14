@@ -41,8 +41,8 @@ body {
 #tabela-dados thead {
     background-color: #f9fafb;
     position: sticky;
-    top: 0;
-    z-index: 10;
+    top: 0; /* Corrigido: cabeçalho no topo da área */
+    z-index: 50; /* Aumentado para garantir que fique acima */
 }
 #tabela-dados tbody tr:hover {
     background-color: #f3f4f6;
@@ -146,6 +146,38 @@ body.resizing { cursor: col-resize; }
   transform: scale(1.05);
 }
 
+/* Função Nova 01 e 02: Estilos para elementos clicáveis SEM aparência de link */
+.contato-whatsapp, 
+.email-copiar {
+  color: inherit !important; /* Mantém a cor original do texto */
+  text-decoration: none !important; /* Remove sublinhado */
+  font-weight: normal !important; /* Remove negrito */
+  cursor: pointer;
+}
+
+.contato-whatsapp:hover, 
+.email-copiar:hover {
+  background-color: #10b98100; /* Leve destaque ao passar o mouse */
+  border-radius: 3px;
+  padding: 1px 3px;
+}
+
+/* Tooltip para WhatsApp */
+.whatsapp-tooltip {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: #f59e0b;
+}
+
+.whatsapp-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #374151 transparent transparent transparent;
+}
 
 /* small screens */
 @media (max-width: 1024px) {
