@@ -14,6 +14,12 @@ let colWidths = {}; // persistidas
 let sortState = { column: null, dir: null }; // dir: 'asc' | 'desc'
 
 const colunasOcultas = ['id'];
+// Colunas de dias/turnos que serão ocultas e substituídas pela coluna "Disponibilidade"
+const colunasDiasTurnos = [
+  'segManha', 'segTarde', 'terManha', 'terTarde', 
+  'quaManha', 'quaTarde', 'quiManha', 'quiTarde', 
+  'sexManha', 'sexTarde', 'sabManha', 'sabTarde'
+];
 const tituloPrincipal = "Dashboard de Professores";
 const subtitulo = "Ester Calazans: Administradora geral";
 
@@ -137,8 +143,21 @@ async function carregarDadosSupabase() {
     if (error) throw error;
     if (data && data.length > 0) {
       dadosTabela = data;
-      colunasDisponiveis = Object.keys(data[0]).filter(c => !colunasOcultas.includes(c));
-      if (colunasSelecionadas.length === 0) colunasSelecionadas = [...colunasDisponiveis];
+      
+      // Obter colunas disponíveis, excluindo as ocultas e as de dias/turnos
+      const todasColunas = Object.keys(data[0]);
+      colunasDisponiveis = todasColunas.filter(c => 
+        !colunasOcultas.includes(c) && !colunasDiasTurnos.includes(c)
+      );
+      
+      // Adicionar a coluna "Disponibilidade" como uma coluna virtual
+      colunasDisponiveis.push('Disponibilidade');
+      
+      // Se não há colunas selecionadas, definir padrão (todas exceto dias/turnos)
+      if (colunasSelecionadas.length === 0) {
+        colunasSelecionadas = [...colunasDisponiveis];
+      }
+      
       criarDropdownColunas();
       aplicarFiltros();
     } else {
@@ -211,6 +230,49 @@ function criarDropdownColunas() {
   }
 }
 
+// ---------------- NOVA FUNÇÃO: FORMATAR DISPONIBILIDADE ----------------
+function formatarDisponibilidade(item) {
+  const diasMap = {
+    segManha: { dia: 'Segunda', turno: 'Manhã' },
+    segTarde: { dia: 'Segunda', turno: 'Tarde' },
+    terManha: { dia: 'Terça', turno: 'Manhã' },
+    terTarde: { dia: 'Terça', turno: 'Tarde' },
+    quaManha: { dia: 'Quarta', turno: 'Manhã' },
+    quaTarde: { dia: 'Quarta', turno: 'Tarde' },
+    quiManha: { dia: 'Quinta', turno: 'Manhã' },
+    quiTarde: { dia: 'Quinta', turno: 'Tarde' },
+    sexManha: { dia: 'Sexta', turno: 'Manhã' },
+    sexTarde: { dia: 'Sexta', turno: 'Tarde' },
+    sabManha: { dia: 'Sábado', turno: 'Manhã' },
+    sabTarde: { dia: 'Sábado', turno: 'Tarde' }
+  };
+
+  const disponibilidadePorDia = {};
+
+  // Agrupar turnos por dia
+  Object.entries(diasMap).forEach(([chave, info]) => {
+    const valor = getFieldValue(item, chave);
+    if (isTruthyValue(valor)) {
+      if (!disponibilidadePorDia[info.dia]) {
+        disponibilidadePorDia[info.dia] = [];
+      }
+      disponibilidadePorDia[info.dia].push(info.turno);
+    }
+  });
+
+  // Formatar a string de disponibilidade
+  const partes = [];
+  Object.entries(disponibilidadePorDia).forEach(([dia, turnos]) => {
+    if (turnos.length === 2) {
+      partes.push(`${dia}: Manhã e Tarde`);
+    } else if (turnos.length === 1) {
+      partes.push(`${dia}: ${turnos[0]}`);
+    }
+  });
+
+  return partes.join(', ');
+}
+
 // ---------------- TABELA (renderização) ----------------
 function criarTabela(dados) {
   const tabela = document.getElementById('tabela-dados');
@@ -221,7 +283,9 @@ function criarTabela(dados) {
   thead.innerHTML = '';
   tbody.innerHTML = '';
 
-  const colunasParaExibir = colunasSelecionadas.filter(col => !colunasOcultas.includes(col));
+  const colunasParaExibir = colunasSelecionadas.filter(col => 
+    !colunasOcultas.includes(col) && !colunasDiasTurnos.includes(col)
+  );
 
   // Cabeçalho com resize handle e sort
   colunasParaExibir.forEach(coluna => {
@@ -274,20 +338,22 @@ function criarTabela(dados) {
 
       colunasParaExibir.forEach(coluna => {
         const td = document.createElement('td');
-        td.className = 'px-6 py-4 text-sm text-gray-900 celula-editavel';
+        td.className = 'px-6 py-4 text-sm text-gray-900';
         td.dataset.field = coluna;
 
-        const valor = getFieldValue(item, coluna);
-        const valorFormatado = (valor !== undefined && valor !== null) ? String(valor) : '';
-
+        // Coluna especial "Disponibilidade"
+        if (coluna === 'Disponibilidade') {
+          td.textContent = formatarDisponibilidade(item);
+          // Não é editável
+        } 
         // Função Nova 01: Contato com tooltip para WhatsApp
-        if (isContatoColumn(coluna)) {
+        else if (isContatoColumn(coluna)) {
           const container = document.createElement('div');
           container.className = 'relative inline-block';
           
           const span = document.createElement('span');
-          span.textContent = valorFormatado;
-          span.className = 'contato-whatsapp cursor-help';
+          span.textContent = getFieldValue(item, coluna) || '';
+          span.className = 'contato-whatsapp cursor-pointer';
           
           // Tooltip flutuante
           const tooltip = document.createElement('div');
@@ -310,7 +376,8 @@ function criarTabela(dados) {
           container.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
-            const numeroLimpo = limparNumeroTelefone(valorFormatado);
+            const valor = getFieldValue(item, coluna) || '';
+            const numeroLimpo = limparNumeroTelefone(valor);
             if (numeroLimpo) {
               window.open(`https://wa.me/${numeroLimpo}`, '_blank');
             }
@@ -321,27 +388,32 @@ function criarTabela(dados) {
         }
         // Função Nova 02: Email clicável para copiar
         else if (isEmailColumn(coluna)) {
+          const valor = getFieldValue(item, coluna) || '';
           const span = document.createElement('span');
-          span.textContent = valorFormatado;
+          span.textContent = valor;
           span.className = 'cursor-pointer email-copiar';
           span.addEventListener('click', (e) => {
             e.stopPropagation();
-            copiarEmail(valorFormatado);
+            copiarEmail(valor);
           });
           td.textContent = '';
           td.appendChild(span);
         }
         else if (isDateColumnName(coluna)) {
+          const valor = getFieldValue(item, coluna);
           td.textContent = formatDateForDisplay(valor);
         } else {
-          td.textContent = valorFormatado;
+          const valor = getFieldValue(item, coluna);
+          td.textContent = (valor !== undefined && valor !== null) ? String(valor) : '';
+          td.classList.add('celula-editavel');
         }
 
-        td.addEventListener('click', (e) => {
-          if (e.target === td && !isContatoColumn(coluna) && !isEmailColumn(coluna)) {
-            iniciarEdicaoCelula(td);
-          }
-        });
+        // Adicionar evento de edição apenas para células editáveis
+        if (coluna !== 'Disponibilidade' && !isContatoColumn(coluna) && !isEmailColumn(coluna)) {
+          td.addEventListener('click', (e) => {
+            if (e.target === td) iniciarEdicaoCelula(td);
+          });
+        }
 
         tr.appendChild(td);
       });

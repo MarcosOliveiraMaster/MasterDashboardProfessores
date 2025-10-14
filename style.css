@@ -1,6 +1,7 @@
 body {
     font-family: 'Lexend', sans-serif;
     background-color: #f3f4f6;
+    font-size: 0.875rem; /* Tamanho de fonte padrão para todo o sistema */
 }
 .font-comfortaa { font-family: 'Comfortaa', cursive; }
 
@@ -11,7 +12,8 @@ body {
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     background: transparent;
-    border-radius: 8px;
+    border-radius: 12px;
+    padding: 0;
 }
 
 /* Tabela: layout AUTO (começa com largura ideal ao conteúdo).
@@ -21,6 +23,7 @@ body {
     width: 100%;
     table-layout: auto;          /* largura inicial adaptada ao conteúdo */
     min-width: max-content;      /* força a tabela a ocupar o espaço mínimo necessário para conteúdo */
+    font-size: 0.875rem; /* Tamanho de fonte uniforme para a tabela */
 }
 #tabela-dados th, #tabela-dados td {
     padding: 12px 16px;
@@ -41,8 +44,14 @@ body {
 #tabela-dados thead {
     background-color: #f9fafb;
     position: sticky;
-    top: 0; /* Corrigido: cabeçalho no topo da área */
-    z-index: 50; /* Aumentado para garantir que fique acima */
+    top: 0; /* Cabeçalho no topo da área */
+    z-index: 40; /* Z-index ajustado para ficar abaixo dos menus */
+
+
+}
+#tabela-dados th {
+padding-top: 16px;
+    padding-bottom: 16px;
 }
 #tabela-dados tbody tr:hover {
     background-color: #f3f4f6;
@@ -119,12 +128,30 @@ body {
     transform: scale(1.03);
 }
 
-#filtrosContainer { border: 1px solid rgba(229,231,235,0.9); }
-#disciplinasMenu, #categoriasMenu, #diasTurnosMenu, #dropdownMenu { box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+#filtrosContainer { 
+    border: 1px solid rgba(229,231,235,0.9); 
+    font-size: 0.875rem; /* Tamanho de fonte uniforme para filtros */
+}
+#disciplinasMenu, #categoriasMenu, #diasTurnosMenu, #dropdownMenu { 
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08); 
+    z-index: 50; /* Z-index maior para ficar acima do cabeçalho */
+}
 
-.filtro-input { font-size: 0.85rem; } /* inputs/selects/buttons de busca */
-.filtro-input::placeholder { font-size: 0.85rem; opacity: 0.8; }
-.filtro-listings { font-size: 0.85rem; } /* listas dentro dos menus (disciplinas, categorias, columnsList) */
+.filtro-input { 
+    font-size: 0.875rem; /* inputs/selects/buttons de busca - tamanho uniforme */
+} 
+.filtro-input::placeholder { 
+    font-size: 0.875rem; 
+    opacity: 0.8; 
+}
+.filtro-listings { 
+    font-size: 0.875rem; /* listas dentro dos menus (disciplinas, categorias, columnsList) */
+}
+
+/* Botão Limpar Busca com fonte uniforme */
+#limparBusca {
+    font-size: 0.875rem;
+}
 
 body.resizing { cursor: col-resize; }
 
@@ -139,7 +166,7 @@ body.resizing { cursor: col-resize; }
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: 0.875rem; /* Tamanho uniforme */
 }
 
 #disciplinasMenu input[type="checkbox"] {
@@ -152,12 +179,12 @@ body.resizing { cursor: col-resize; }
   color: inherit !important; /* Mantém a cor original do texto */
   text-decoration: none !important; /* Remove sublinhado */
   font-weight: normal !important; /* Remove negrito */
-  cursor: pointer;
+  cursor: pointer; /* Cursor de mão para ambos */
 }
 
 .contato-whatsapp:hover, 
 .email-copiar:hover {
-  background-color: #10b98100; /* Leve destaque ao passar o mouse */
+  background-color: #f3f4f6; /* Leve destaque ao passar o mouse */
   border-radius: 3px;
   padding: 1px 3px;
 }
@@ -165,7 +192,8 @@ body.resizing { cursor: col-resize; }
 /* Tooltip para WhatsApp */
 .whatsapp-tooltip {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  background-color: #f59e0b;
+  background-color: #25D366; /* Verde do WhatsApp */
+  color: white; /* Texto branco para contraste */
 }
 
 .whatsapp-tooltip::after {
@@ -176,7 +204,7 @@ body.resizing { cursor: col-resize; }
   margin-left: -5px;
   border-width: 5px;
   border-style: solid;
-  border-color: #374151 transparent transparent transparent;
+  border-color: #25D366 transparent transparent transparent; /* Mesma cor do tooltip */
 }
 
 /* small screens */

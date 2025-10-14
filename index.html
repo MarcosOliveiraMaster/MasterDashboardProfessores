@@ -47,7 +47,7 @@
                   </svg>
                 </button>
 
-                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-40">
+                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                   <div class="py-1 max-h-60 overflow-auto" role="menu">
                     <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
                       <label class="inline-flex items-center cursor-pointer">
@@ -81,7 +81,7 @@
               <button id="diasTurnosToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">
                 Selecionar dias e turnos
               </button>
-              <div id="diasTurnosMenu" class="hidden absolute left-0 mt-2 w-full max-h-60 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
+              <div id="diasTurnosMenu" class="hidden absolute left-0 mt-2 w-full max-h-60 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 p-3 filtro-listings">
                 <div id="diasTurnosContainer" class="flex flex-col gap-1 text-sm"></div>
               </div>
             </div>
@@ -90,7 +90,7 @@
             <div class="w-72 relative">
               <label class="block text-xs font-medium text-gray-600 mb-1">Disciplinas</label>
               <button id="disciplinasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar disciplinas</button>
-              <div id="disciplinasMenu" class="hidden absolute left-0 mt-2 w-full max-h-48 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
+              <div id="disciplinasMenu" class="hidden absolute left-0 mt-2 w-full max-h-48 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 p-3 filtro-listings">
                 <div class="grid grid-cols-2 gap-2 text-sm">
                   <label><input type="checkbox" name="filtroDisciplinas" value="Biologia"> Biologia</label>
                   <label><input type="checkbox" name="filtroDisciplinas" value="Ciências"> Ciências</label>
@@ -111,7 +111,7 @@
             <div class="w-64 relative">
               <label class="block text-xs font-medium text-gray-600 mb-1">Categorias</label>
               <button id="categoriasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar categorias</button>
-              <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-30 p-3 filtro-listings">
+              <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 p-3 filtro-listings">
                 <div class="grid grid-cols-1 gap-2 text-sm">
                   <label><input type="checkbox" name="filtroCategorias" value="expTdics"> TDICS</label>
                   <label><input type="checkbox" name="filtroCategorias" value="expAulas"> Aulas particulares</label>
@@ -121,7 +121,7 @@
             </div>
 
             <div class="ml-auto flex items-center mt-1">
-              <button id="limparBusca" class="bg-blue-500 text-white rounded-lg px-4 py-2 font-medium hover:bg-blue-600">Limpar Busca</button>
+              <button id="limparBusca" class="filtro-input bg-blue-500 text-white rounded-lg px-4 py-2 font-medium hover:bg-blue-600">Limpar Busca</button>
             </div>
           </div>
         </div>
@@ -130,7 +130,7 @@
           <!-- wrapper que permite scroll horizontal e vertical -->
           <div class="table-wrapper overflow-auto h-full p-4">
             <table id="tabela-dados" class="min-w-full" role="table" aria-label="Tabela de Professores">
-              <thead class="bg-gray-50 sticky -top-4 z-50">
+              <thead class="bg-gray-50 sticky top-0 z-40">
                 <tr></tr>
               </thead>
               <tbody class="divide-y divide-gray-200"></tbody>
