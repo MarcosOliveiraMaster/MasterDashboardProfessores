@@ -280,6 +280,8 @@ function criarTabela(dados) {
   const thead = tabela.querySelector('thead tr');
   const tbody = tabela.querySelector('tbody');
 
+  
+
   thead.innerHTML = '';
   tbody.innerHTML = '';
 
@@ -407,6 +409,9 @@ function criarTabela(dados) {
           td.textContent = (valor !== undefined && valor !== null) ? String(valor) : '';
           td.classList.add('celula-editavel');
         }
+
+        
+
 
         // Adicionar evento de edição apenas para células editáveis
         if (coluna !== 'Disponibilidade' && !isContatoColumn(coluna) && !isEmailColumn(coluna)) {

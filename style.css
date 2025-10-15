@@ -5,6 +5,7 @@ body {
 }
 .font-comfortaa { font-family: 'Comfortaa', cursive; }
 
+
 /* Wrapper que permite scroll horizontal e vertical */
 .table-wrapper {
     width: 100%;
@@ -15,6 +16,8 @@ body {
     border-radius: 12px;
     padding: 0;
 }
+
+
 
 /* Tabela: layout AUTO (começa com largura ideal ao conteúdo).
    A tabela pode crescer além da largura do container -> scroll horizontal no wrapper */
@@ -41,14 +44,14 @@ body {
 #tabela-dados th:last-child, #tabela-dados td:last-child {
     border-right: none;
 }
+
 #tabela-dados thead {
-    background-color: #f9fafb;
-    position: sticky;
-    top: 0; /* Cabeçalho no topo da área */
-    z-index: 40; /* Z-index ajustado para ficar abaixo dos menus */
+    background-color: #f9fafb !important;
+    position: sticky !important;
+    top: 0 !important; /* Cabeçalho no topo da área */
+    z-index: 40 !important; /* Z-index ajustado para ficar abaixo dos menus */
+  }
 
-
-}
 #tabela-dados th {
 padding-top: 16px;
     padding-bottom: 16px;
@@ -192,7 +195,7 @@ body.resizing { cursor: col-resize; }
 /* Tooltip para WhatsApp */
 .whatsapp-tooltip {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  background-color: #25D366; /* Verde do WhatsApp */
+  background-color: #f59e0b; /* Verde do WhatsApp */
   color: white; /* Texto branco para contraste */
 }
 
