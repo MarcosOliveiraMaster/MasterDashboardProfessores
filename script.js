@@ -21,10 +21,20 @@ const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 */
 const MASKS_STORAGE_KEY = 'tableColumnMasks';
 const defaultMasks = {
-  nome: 'Nome',          // Adicione aqui título para a coluna nome
+  nome: 'Nome Professor',          // Adicione aqui título para a coluna nome
   cpf: 'CPF',            // Adicione aqui título para a coluna cpf
   email: 'E-mail',       // Adicione aqui título para a coluna email
-  contato: 'Contato'     // Adicione aqui título para a coluna contato
+  contato: 'Contato',     // Adicione aqui título para a coluna contato
+  nivel: 'Nível Acadêmico',
+  expAulas: 'Experiência em Aulas',
+  descricaoExpAulas: 'Descrição da Experiência',
+  bairros: 'Bairros de acesso',
+  curso: 'Curso de Formação e Instituição',
+  expNeuro: 'Experiência com alunos atípicos',
+  descricaoExpNeuro: 'Experiência com alunos atípicos',
+  expTdics: 'Experiência com Tecnologias Educacionais',
+  descricaoTdics: 'Descrição da Experiência com Tecnologias Educacionais',
+  pix: 'Chave Pix',
 };
 
 function loadMasks() {
