@@ -64,3 +64,13 @@ body {
 }
 
 body.resizing { cursor: col-resize; }
+
+
+/* Atualização 03: botão Limpar Busca — cor laranja da identidade */
+#limparBusca {
+  background-color: #f97316 !important;
+  color: white !important;
+}
+#limparBusca:hover {
+  background-color: #ea580c !important;
+}

@@ -6,6 +6,59 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 // ---------------- GLOBAIS ----------------
+
+
+/* ======= MÁSCARAS DE CABEÇALHO (labels exibidos) =======
+   Adicione aqui título para a coluna nome
+   Adicione aqui título para a coluna cpf
+   Adicione aqui título para a coluna email
+   Adicione aqui título para a coluna contato
+   Para mudar o texto exibido no cabeçalho e no dropdown padrão,
+   edite os valores abaixo. As máscaras são persistidas no localStorage
+   sob a chave 'tableColumnMasks' e serão usadas para renderizar os títulos.
+   Observação: estas máscaras alteram somente o texto exibido; o nome real
+   da coluna usado em consultas/filters NÃO é modificado.
+*/
+const MASKS_STORAGE_KEY = 'tableColumnMasks';
+const defaultMasks = {
+  nome: 'Nome',          // Adicione aqui título para a coluna nome
+  cpf: 'CPF',            // Adicione aqui título para a coluna cpf
+  email: 'E-mail',       // Adicione aqui título para a coluna email
+  contato: 'Contato'     // Adicione aqui título para a coluna contato
+};
+
+function loadMasks() {
+  try {
+    const raw = localStorage.getItem(MASKS_STORAGE_KEY);
+    if (raw) {
+      return Object.assign({}, defaultMasks, JSON.parse(raw));
+    }
+  } catch (e) { console.warn('Erro ao carregar máscaras:', e); }
+  return Object.assign({}, defaultMasks);
+}
+function saveMasks(masks) {
+  try {
+    localStorage.setItem(MASKS_STORAGE_KEY, JSON.stringify(masks));
+  } catch (e) { console.warn('Erro ao salvar máscaras:', e); }
+}
+// disponibilidade da variável global 'masks'
+let masks = loadMasks();
+
+// Funções utilitárias para atualizar/resetar máscaras via console
+window.updateColumnMasks = function(newMasks) {
+  masks = Object.assign({}, masks, newMasks);
+  saveMasks(masks);
+  // re-render important parts
+  if (typeof criarDropdownColunas === 'function') criarDropdownColunas();
+  if (typeof montarTabela === 'function') montarTabela();
+};
+window.resetColumnMasksToDefault = function() {
+  masks = Object.assign({}, defaultMasks);
+  saveMasks(masks);
+  if (typeof criarDropdownColunas === 'function') criarDropdownColunas();
+  if (typeof montarTabela === 'function') montarTabela();
+};
+
 let dadosTabela = null;
 let colunasDisponiveis = [];
 let colunasSelecionadas = [];
@@ -209,7 +262,7 @@ function criarDropdownColunas() {
 
     const span = document.createElement('span');
     span.className = 'ml-2 truncate';
-    span.textContent = coluna;
+    span.textContent = (masks && masks[coluna]) ? masks[coluna] : coluna;
 
     label.appendChild(input);
     label.appendChild(span);
@@ -299,7 +352,7 @@ function criarTabela(dados) {
       const btn = document.createElement('button');
       btn.className = 'text-left w-full flex items-center justify-between gap-2';
       const span = document.createElement('span');
-      span.textContent = coluna;
+      span.textContent = (masks && masks[coluna]) ? masks[coluna] : coluna;
       const icon = document.createElement('span');
       icon.className = 'sort-icon';
       icon.innerHTML = getSortIconMarkup(sortState.column === coluna ? sortState.dir : null);
@@ -308,7 +361,7 @@ function criarTabela(dados) {
       btn.addEventListener('click', (e) => { e.stopPropagation(); toggleSort(coluna); });
       th.appendChild(btn);
     } else {
-      th.textContent = coluna;
+      th.textContent = (masks && masks[coluna]) ? masks[coluna] : coluna;
       th.addEventListener('click', () => toggleSort(coluna));
     }
 
@@ -393,10 +446,21 @@ function criarTabela(dados) {
           const valor = getFieldValue(item, coluna) || '';
           const span = document.createElement('span');
           span.textContent = valor;
-          span.className = 'cursor-pointer email-copiar';
-          span.addEventListener('click', (e) => {
+          span.className = 'cursor-pointer email-copiar copiar-generico';
+          span.addEventListener('click', async (e) => {
             e.stopPropagation();
-            copiarEmail(valor);
+            try {
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(valor);
+              } else {
+                const ta = document.createElement('textarea'); ta.value = valor; ta.style.position = 'fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+              }
+              const label = (masks && masks[coluna]) ? masks[coluna] : coluna;
+              mostrarPopup(label + ' copiado');
+            } catch (err) {
+              console.error('Erro ao copiar e-mail/genérico: ', err);
+              mostrarPopup('Erro ao copiar');
+            }
           });
           td.textContent = '';
           td.appendChild(span);
@@ -413,10 +477,24 @@ function criarTabela(dados) {
         
 
 
-        // Adicionar evento de edição apenas para células editáveis
-        if (coluna !== 'Disponibilidade' && !isContatoColumn(coluna) && !isEmailColumn(coluna)) {
-          td.addEventListener('click', (e) => {
-            if (e.target === td) iniciarEdicaoCelula(td);
+        // Modificação: cliques em células (não-contato, não-email) COPIAM o conteúdo
+        if (!isContatoColumn(coluna) && !isEmailColumn(coluna)) {
+          td.addEventListener('click', async (e) => {
+            // evita que cliques em elementos internos dupliquem a ação
+            if (e.target !== td && e.target.closest && e.target.closest('a')) return;
+            const valor = (getFieldValue(item, coluna) !== undefined && getFieldValue(item, coluna) != null) ? String(getFieldValue(item, coluna)) : td.textContent.trim();
+            try {
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                await navigator.clipboard.writeText(valor);
+              } else {
+                const ta = document.createElement('textarea'); ta.value = valor; ta.style.position = 'fixed'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+              }
+              const label = (masks && masks[coluna]) ? masks[coluna] : coluna;
+              mostrarPopup(label + ' copiado');
+            } catch (err) {
+              console.error('Erro ao copiar conteúdo:', err);
+              mostrarPopup('Erro ao copiar');
+            }
           });
         }
 
