@@ -8,10 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;700&family=Comfortaa:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="style.css">
-
 </head>
-<body class="h-screen flex flex-col">
 
+<body class="h-screen flex flex-col">
   <header class="relative bg-orange-500 h-16 flex items-center px-6 shadow-md">
     <div class="absolute right-0 top-0 h-full w-1/4 bg-orange-500 shadow-[inset_5px_0_15px_rgba(0,0,0,0.1)] rounded-bl-3xl"></div>
     <div class="relative z-10 flex items-center">
@@ -38,86 +37,65 @@
             <p class="text-gray-700 font-comfortaa">Visualização e Busca de Colaboradores</p>
           </div>
 
-          <div class="bg-white rounded-lg p-4 shadow-sm">
-
+          <div>
             <div class="relative">
-                <button id="dropdownToggle" class="inline-flex justify-between w-48 rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none">
-                  Selecionar colunas
-                  <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                  </svg>
-                </button>
-
-                <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                  <div class="py-1 max-h-60 overflow-auto" role="menu">
-                    <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
-                      <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="selectAllColumns" class="rounded border-gray-300 text-orange-600 shadow-sm">
-                        <span class="ml-2 font-medium">Todas as colunas</span>
-                      </label>
-                    </div>
-                    <div id="columnsList" class="py-1"></div>
+              <button id="dropdownToggle" class="inline-flex justify-between w-48 rounded-md border border-gray-300 px-4 py-2 bg-gray-200 text-sm font-medium text-gray-700 hover:bg-gray-300 focus:outline-none">
+                Selecionar colunas
+                <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </button>
+              <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-56 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50 bg-gray-100">
+                <div class="py-1 max-h-60 overflow-auto" role="menu">
+                  <div class="px-4 py-2 text-sm text-gray-700 border-b border-gray-200">
+                    <label class="inline-flex items-center cursor-pointer">
+                      <input type="checkbox" id="selectAllColumns" class="rounded border-gray-300 text-orange-600 shadow-sm">
+                      <span class="ml-2 font-medium">Todas as colunas</span>
+                    </label>
                   </div>
+                  <div id="columnsList" class="py-1"></div>
                 </div>
               </div>
-
-
+            </div>
           </div>
         </div>
 
-        <!-- Painel de filtros -->
         <div id="filtrosContainer" class="mb-4 bg-white rounded-lg shadow-sm p-4 relative">
           <div class="flex items-start gap-4">
             <div class="flex-1 min-w-[180px]">
-              <label class="block text-xs font-medium text-gray-600 mb-1"></label>
               <input id="filtroNome" type="search" placeholder="Buscar por nome..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
             </div>
             <div class="flex-1 min-w-[160px]">
-              <label class="block text-xs font-medium text-gray-600 mb-1"></label>
               <input id="filtroBairro" type="search" placeholder="Buscar por bairro..." class="w-full rounded-lg border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-200 filtro-input">
             </div>
 
-            <!-- Dias e Turnos dropdown -->
             <div class="w-64 relative">
-              <label class="block text-xs font-medium text-gray-600 mb-1"></label>
-              <button id="diasTurnosToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">
-                Selecionar dias e turnos
-              </button>
+              <button id="diasTurnosToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar dias e turnos</button>
               <div id="diasTurnosMenu" class="hidden absolute left-0 mt-2 w-full max-h-60 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 p-3 filtro-listings">
                 <div id="diasTurnosContainer" class="flex flex-col gap-1 text-sm"></div>
               </div>
             </div>
 
-            <!-- Disciplinas -->
             <div class="w-72 relative">
-              <label class="block text-xs font-medium text-gray-600 mb-1"></label>
               <button id="disciplinasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar disciplinas</button>
               <div id="disciplinasMenu" class="hidden absolute left-0 mt-2 w-full max-h-48 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 p-3 filtro-listings">
                 <div class="grid grid-cols-2 gap-2 text-sm">
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Biologia"> Biologia</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Ciências"> Ciências</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Física"> Física</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Geografia"> Geografia</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="História"> História</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Inglês"> Inglês</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Literatura"> Literatura</label>
                   <label><input type="checkbox" name="filtroDisciplinas" value="Matemática"> Matemática</label>
-                  <label><input type="checkbox" name="filtroDisciplinas" value="Pedagogia"> Pedagogia</label>
                   <label><input type="checkbox" name="filtroDisciplinas" value="Português"> Português</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Física"> Física</label>
                   <label><input type="checkbox" name="filtroDisciplinas" value="Química"> Química</label>
+                  <label><input type="checkbox" name="filtroDisciplinas" value="Biologia"> Biologia</label>
                 </div>
               </div>
             </div>
 
-            <!-- Categorias -->
             <div class="w-64 relative">
-              <label class="block text-xs font-medium text-gray-600 mb-1"></label>
               <button id="categoriasToggle" class="w-full text-left rounded-lg border px-3 py-2 bg-white focus:outline-none filtro-input">Selecionar Experiências</button>
               <div id="categoriasMenu" class="hidden absolute left-0 mt-2 w-full max-h-36 overflow-auto rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 p-3 filtro-listings">
                 <div class="grid grid-cols-1 gap-2 text-sm">
                   <label><input type="checkbox" name="filtroCategorias" value="expTdics"> Tecnologias Educacionais</label>
                   <label><input type="checkbox" name="filtroCategorias" value="expAulas"> Aulas particulares</label>
-                  <label><input type="checkbox" name="filtroCategorias" value="expNeuro"> Alunos atipicos</label>
+                  <label><input type="checkbox" name="filtroCategorias" value="expNeuro"> Alunos atípicos</label>
                 </div>
               </div>
             </div>
@@ -128,9 +106,8 @@
           </div>
         </div>
 
-        <div class="flex-1 bg-white rounded-lg shadow-md overflow-hidden">
-          <!-- wrapper que permite scroll horizontal e vertical -->
-          <div class="table-wrapper overflow-auto h-full p-4">
+        <div class="flex-1 bg-white shadow-md overflow-hidden">
+          <div class="table-wrapper overflow-auto h-full">
             <table id="tabela-dados" class="min-w-full" role="table" aria-label="Tabela de Professores">
               <thead class="bg-gray-50 sticky top-0 z-40">
                 <tr></tr>
@@ -157,6 +134,5 @@
   </footer>
 
   <script src="script.js"></script>
-  
 </body>
 </html>
