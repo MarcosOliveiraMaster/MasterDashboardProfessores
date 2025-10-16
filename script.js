@@ -37,6 +37,8 @@ const defaultMasks = {
   pix: 'Chave Pix',
 };
 
+
+
 function loadMasks() {
   try {
     const raw = localStorage.getItem(MASKS_STORAGE_KEY);
@@ -411,13 +413,22 @@ function criarTabela(dados) {
           td.textContent = formatarDisponibilidade(item);
           // Não é editável
         } 
-        // Função Nova 01: Contato com tooltip para WhatsApp
+        // Nova Função 1: Formatação de CPF (###.###.###-##)
+        else if (isCPFColumn(coluna)) {
+          const valor = getFieldValue(item, coluna) || '';
+          td.textContent = formatarCPF(valor);
+          td.classList.add('celula-editavel');
+        }
+        // Nova Função 2: Formatação de Contato ((00) 0.0000-0000)
         else if (isContatoColumn(coluna)) {
+          const valor = getFieldValue(item, coluna) || '';
+          const numeroFormatado = formatarTelefone(valor);
+          
           const container = document.createElement('div');
           container.className = 'relative inline-block';
           
           const span = document.createElement('span');
-          span.textContent = getFieldValue(item, coluna) || '';
+          span.textContent = numeroFormatado;
           span.className = 'contato-whatsapp cursor-pointer';
           
           // Tooltip flutuante
@@ -540,6 +551,49 @@ function criarTabela(dados) {
 }
 
 // ---------------- NOVAS FUNÇÕES ----------------
+// Nova Função 1: Identificar coluna de CPF
+function isCPFColumn(coluna) {
+  const col = coluna.toLowerCase();
+  return col === 'cpf';
+}
+
+// Nova Função 1: Formatar CPF (###.###.###-##)
+function formatarCPF(cpf) {
+  if (!cpf) return '';
+  
+  // Remove tudo que não é dígito
+  const numeros = cpf.toString().replace(/\D/g, '');
+  
+  // Aplica a formatação se tiver 11 dígitos
+  if (numeros.length === 11) {
+    return numeros.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+  }
+  
+  // Retorna o valor original se não puder formatar
+  return cpf;
+}
+
+// Nova Função 2: Formatar telefone ((00) 0.0000-0000)
+function formatarTelefone(telefone) {
+  if (!telefone) return '';
+  
+  // Remove tudo que não é dígito
+  const numeros = telefone.toString().replace(/\D/g, '');
+  
+  // Formata como (00) 0.0000-0000 para números com 11 dígitos
+  if (numeros.length === 11) {
+    return numeros.replace(/(\d{2})(\d{1})(\d{4})(\d{4})/, '($1) $2.$3-$4');
+  }
+  
+  // Formata como (00) 0000-0000 para números com 10 dígitos
+  if (numeros.length === 10) {
+    return numeros.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+  }
+  
+  // Retorna o valor original se não puder formatar
+  return telefone;
+}
+
 // Função Nova 01: Identificar coluna de contato
 function isContatoColumn(coluna) {
   const col = coluna.toLowerCase();
@@ -936,10 +990,12 @@ function getSortIconMarkup(dir) {
 }
 
 // ----------------- Dias e Turnos UI -----------------
+// ----------------- Dias e Turnos UI -----------------
 function montarDiasTurnos() {
   const diasTurnosContainer = document.getElementById('diasTurnosContainer');
   if (!diasTurnosContainer) return;
   diasTurnosContainer.innerHTML = '';
+  
   const dias = [
     { name: 'Segunda', key: 'seg' },
     { name: 'Terça', key: 'ter' },
@@ -948,45 +1004,130 @@ function montarDiasTurnos() {
     { name: 'Sexta', key: 'sex' },
     { name: 'Sábado', key: 'sab' },
   ];
+
+  // Adicionar CSS para o layout correto
+  const style = document.createElement('style');
+  style.textContent = `
+    .dia-item {
+      margin-bottom: 8px;
+    }
+    .dia-checkbox-container {
+      display: flex;
+      align-items: center;
+      padding: 4px 0;
+      cursor: pointer;
+    }
+    .dia-checkbox {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+    .dia-label {
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .subturnos-container {
+      margin-left: 24px;
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .turno-option {
+      display: flex;
+      align-items: center;
+      padding: 2px 0;
+    }
+    .turno-option label {
+      margin-left: 6px;
+      cursor: pointer;
+      font-weight: normal;
+    }
+    .hidden {
+      display: none;
+    }
+  `;
+  document.head.appendChild(style);
+
   dias.forEach(d => {
-    const divDia = document.createElement('div');
-    divDia.className = 'dia-checkbox';
+    // Container principal do dia
+    const diaItem = document.createElement('div');
+    diaItem.className = 'dia-item';
+
+    // Container do checkbox do dia
+    const diaCheckboxContainer = document.createElement('div');
+    diaCheckboxContainer.className = 'dia-checkbox-container';
+    
     const inputDia = document.createElement('input');
     inputDia.type = 'checkbox';
     inputDia.id = `chk_${d.key}`;
     inputDia.value = d.key;
-    const labelDia = document.createElement('label');
-    labelDia.htmlFor = inputDia.id;
-    labelDia.textContent = d.name;
-    divDia.appendChild(inputDia);
-    divDia.appendChild(labelDia);
-    diasTurnosContainer.appendChild(divDia);
+    inputDia.className = 'dia-checkbox';
 
-    const subDiv = document.createElement('div');
-    subDiv.className = 'subturnos hidden';
-    subDiv.id = `sub_${d.key}`;
+    const labelDia = document.createElement('label');
+    labelDia.htmlFor = `chk_${d.key}`;
+    labelDia.className = 'dia-label';
+    labelDia.textContent = d.name;
+
+    diaCheckboxContainer.appendChild(inputDia);
+    diaCheckboxContainer.appendChild(labelDia);
+
+    // Container para os turnos (inicialmente oculto)
+    const subturnosContainer = document.createElement('div');
+    subturnosContainer.className = 'subturnos-container hidden';
+    subturnosContainer.id = `sub_${d.key}`;
+
+    // Criar opções de turno
     const manhaId = `turno_${d.key}Manha`;
     const tardeId = `turno_${d.key}Tarde`;
-    subDiv.innerHTML = `
-      <label><input type="checkbox" name="turnos" id="${manhaId}" value="${d.key}Manha"> Manhã</label>
-      <label><input type="checkbox" name="turnos" id="${tardeId}" value="${d.key}Tarde"> Tarde</label>
-    `;
-    diasTurnosContainer.appendChild(subDiv);
 
+    const manhaOption = document.createElement('div');
+    manhaOption.className = 'turno-option';
+    manhaOption.innerHTML = `
+      <input type="checkbox" name="turnos" id="${manhaId}" value="${d.key}Manha">
+      <label for="${manhaId}">Manhã</label>
+    `;
+
+    const tardeOption = document.createElement('div');
+    tardeOption.className = 'turno-option';
+    tardeOption.innerHTML = `
+      <input type="checkbox" name="turnos" id="${tardeId}" value="${d.key}Tarde">
+      <label for="${tardeId}">Tarde</label>
+    `;
+
+    subturnosContainer.appendChild(manhaOption);
+    subturnosContainer.appendChild(tardeOption);
+
+    // Adicionar elementos ao container do dia
+    diaItem.appendChild(diaCheckboxContainer);
+    diaItem.appendChild(subturnosContainer);
+    diasTurnosContainer.appendChild(diaItem);
+
+    // Evento para o checkbox do dia (mostrar/ocultar turnos)
     inputDia.addEventListener('change', () => {
-      if (inputDia.checked) subDiv.classList.remove('hidden');
-      else { subDiv.classList.add('hidden'); subDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false); }
+      if (inputDia.checked) {
+        subturnosContainer.classList.remove('hidden');
+      } else {
+        subturnosContainer.classList.add('hidden');
+        // Desmarcar todos os turnos quando o dia for desmarcado
+        subturnosContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+          cb.checked = false;
+        });
+      }
       aplicarFiltros();
     });
 
-    subDiv.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-      cb.addEventListener('change', ()   => {
-        if (cb.checked && !inputDia.checked) {
-          inputDia.checked = true;
-          subDiv.classList.remove('hidden');
-        }
+    // Eventos para os checkboxes dos turnos
+    subturnosContainer.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', () => {
         aplicarFiltros();
       });
+    });
+
+    // Evento para clicar no label do dia (alternar seleção)
+    labelDia.addEventListener('click', (e) => {
+      inputDia.checked = !inputDia.checked;
+      const event = new Event('change');
+      inputDia.dispatchEvent(event);
     });
   });
 }
