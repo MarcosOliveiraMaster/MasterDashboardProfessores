@@ -74,3 +74,45 @@ body.resizing { cursor: col-resize; }
 #limparBusca:hover {
   background-color: #ea580c !important;
 }
+
+/* Section 02 ============================================================================================== */
+/* ---------- Fixes Section2: grid scroll & painel ficheiro scroll ---------- */
+
+/* wrapper do grid (já existente) */
+#grid-perfis-wrapper {
+  max-height: 50vh; /* ajustável */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* painel de ficha: permitir scroll vertical quando muitos campos */
+#panel-ficha {
+  max-height: 62vh; /* controla a área visível do painel */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* garantir que o wrapper que contém o painel escondido não mostre conteúdo */
+#panel-ficha-wrapper[style*="display:none"] {
+  display: none !important;
+}
+
+/* manutenção do visual: bordas, sombras e animações (se já incorporado) */
+.profile-panel {
+  background: linear-gradient(180deg, #ffffff 0%, #fcfdff 100%);
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(8, 15, 27, 0.08);
+}
+
+/* Animações suaves */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(6px); }
+}
+.animate-fade-in-up { animation: fadeInUp 220ms ease both; }
+.animate-fade-out { animation: fadeOut 160ms ease both; }

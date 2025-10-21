@@ -135,9 +135,32 @@
         </div>
       </section>
 
-      <section id="secao2" class="hidden h-full">
-        <h2 class="text-xl font-semibold mb-2">Fichas de Perfil & Seleção de Professores</h2>
+      <section id="section2" class="relative w-full h-full bg-gray-50 overflow-hidden">
+        <!-- GRID DE PASTAS -->
+        <div id="grid-perfis-wrapper" class="absolute inset-0 flex flex-col p-6 overflow-y-auto h-full min-h-full">
+          <h2 class="text-xl font-semibold mb-4 text-gray-700">Professores</h2>
+          <div id="grid-perfis" class="grid grid-cols-4 gap-6 w-full h-full">
+            <!-- Pastas renderizadas via JS -->
+          </div>
+        </div>
+
+        <!-- PAINEL DE EDIÇÃO -->
+        <div id="panel-ficha-wrapper" class="absolute inset-0 hidden flex-col p-6 overflow-y-auto bg-white shadow-lg h-full min-h-full">
+          <div id="panel-ficha" class="flex flex-col w-full max-w-6xl mx-auto h-full">
+            <h2 id="perfil-nome-titulo" class="text-xl font-semibold mb-4 text-gray-700">Perfil</h2>
+            <div id="perfil-campos" class="flex flex-col gap-4 overflow-y-auto bg-gray-50 p-4 rounded-md border border-gray-200 mb-6 flex-1"></div>
+            <div class="flex justify-end gap-4 mt-auto">
+              <button id="perfil-voltar" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-md transition-all">Voltar</button>
+              <button id="perfil-salvar" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-all">Salvar Alterações</button>
+            </div>
+          </div>
+        </div>
       </section>
+
+
+
+
+
 
       <section id="secao3" class="hidden h-full">
         <h2 class="text-xl font-semibold mb-2">Dashboard de Resultados</h2>
@@ -145,11 +168,12 @@
     </main>
   </div>
 
-  <footer class="flex justify-end gap-4 p-4">
+  <!-- <footer class="flex justify-end gap-4 p-4">
     <button id="btn1" class="w-28 h-10 rounded-full bg-green-500 text-white font-bold transition-all duration-500">Salvar</button>
     <div id="statusMsg" class="text-center text-sm text-gray-600 mt-4"></div>
-  </footer>
+  </footer> -->
 
   <script src="script.js"></script>
+  <script src="script-section2.js"></script>
 </body>
 </html>
