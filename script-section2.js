@@ -1,5 +1,10 @@
 // script-section2.js
-// Versão definitiva — Captura real de ID e update 100% funcional
+// Versão corrigida — Com inicialização do Supabase
+
+// INICIALIZAÇÃO DO SUPABASE (ADICIONADA)
+const supabaseUrl = 'https://jfdcddxcfkrhgiozfxmw.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpmZGNkZHhjZmtyaGdpb3pmeG13Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4OTgxODgsImV4cCI6MjA3NDQ3NDE4OH0.BFnQDb6GdvbXvgQq3mB0Bt2u2551-QR4QT1RT6ZXfAE';
+const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 (() => {
   const TABLE_NAME = 'candidatoSelecao';
@@ -205,7 +210,8 @@
       console.log('✅ Update bem-sucedido:', data);
       alert('Alterações salvas com sucesso.');
       mostrarGrid();
-      renderGrid();
+      // Recarrega os dados atualizados do Supabase
+      carregarRegistros();
     } catch (err) {
       console.error('Erro inesperado:', err);
       alert('Erro ao salvar: ' + err.message);
